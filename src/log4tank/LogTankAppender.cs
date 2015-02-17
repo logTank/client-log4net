@@ -14,8 +14,9 @@ namespace log4tank
     {
         private object _lock = new object();
 
-        private List<LoggingEvent> _logs = new List<LoggingEvent>();
+        private List<LogTankEvent> _logs = new List<LogTankEvent>();
         private BackgroundWorker _worker = new BackgroundWorker();
+        private JsonSerializerSettings _defaultSerializerSettings = new JsonSerializerSettings();
 
         private Uri _uri = null;
         private Encoding _defaultEncoding = new UTF8Encoding();
@@ -47,7 +48,7 @@ namespace log4tank
             set
             {
                 _apiKey = value;
-                _apiKey = null;
+                _uri = null;
             }
         }
 
@@ -69,6 +70,9 @@ namespace log4tank
 
         public LogTankAppender()
         {
+            _defaultSerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            _defaultSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+
             _worker.DoWork += StoreLogs;
         }
 
@@ -76,7 +80,7 @@ namespace log4tank
         {
             lock (_lock)
             {
-                _logs.Add(loggingEvent);
+                _logs.Add(new LogTankEvent(loggingEvent));
                 StartWorkerIfNotRunning();
             }
         }
@@ -85,7 +89,10 @@ namespace log4tank
         {
             lock (_lock)
             {
-                _logs.AddRange(loggingEvents);
+                foreach (var item in loggingEvents)
+                {
+                    _logs.Add(new LogTankEvent(item));
+                }
                 StartWorkerIfNotRunning();
             }
         }
@@ -98,7 +105,7 @@ namespace log4tank
 
                 lock (_lock)
                 {
-                    json = JsonConvert.SerializeObject(_logs);
+                    json = JsonConvert.SerializeObject(_logs, _defaultSerializerSettings);
                     _logs.Clear();
                 }
 
@@ -107,7 +114,12 @@ namespace log4tank
                 try
                 {
                     DumpJsonIntoStream(json, http.GetRequestStream());
-                    http.GetResponse().Close();
+                    //http.GetResponse().Close();
+                    var response = http.GetResponse();
+                    var sr = new StreamReader(response.GetResponseStream());
+
+                    var strResponse = sr.ReadToEnd();
+                    Console.WriteLine(strResponse);
                 }
                 catch (Exception ex)
                 {

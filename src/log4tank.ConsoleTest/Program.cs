@@ -25,7 +25,7 @@ namespace log4tank.ConsoleTest
             Console.ReadLine();
         }
 
-        private class MessageType
+        public class MessageType
         {
             public string StringProp { get; set; }
 
