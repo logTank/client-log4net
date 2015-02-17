@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata>
+    <dependencies>
+      <group targetFramework="net20">
+        <dependency id="log4net" version="2.0.3" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
+      </group>
+    </dependencies>
+    <id>log4tank</id>
+    <version>0.1.0.0</version>
+    <title>LogTankAppender for log4net</title>
+    <authors>Peter Grman, logTank</authors>
+    <owners>Peter Grman, logTank</owners>
+    <description>A simple LogTankAppender for log4net, works so far only with HTTP</description>
+    <language />
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <developmentDependency>false</developmentDependency>
+    <releaseNotes>first implementation, based on HTTP Post</releaseNotes>
+    <copyright>Copyright ©  2015</copyright>
+  </metadata>
+  <files>
+    <file src="E:\BtSync\GitHub\logtank\client-log4net\src\log4tank\bin\Release\log4tank.dll" target="lib\net20" />
+  </files>
+</package>
