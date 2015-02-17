@@ -8,7 +8,7 @@ using log4net.Appender;
 using log4net.Core;
 using Newtonsoft.Json;
 
-namespace LogTankClientLog4net
+namespace log4tank
 {
     public class LogTankAppender : AppenderSkeleton
     {
