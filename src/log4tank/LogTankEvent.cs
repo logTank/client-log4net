@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using log4net.Core;
+using log4net.Util;
 
 namespace log4tank
 {
@@ -9,10 +10,10 @@ namespace log4tank
     {
         public LogTankEvent(LoggingEvent loggingEvent)
         {
-            Message = loggingEvent.MessageObject;
+            Message = GetMessageObject(loggingEvent.MessageObject);
             Error = loggingEvent.ExceptionObject;
             LoggerName = loggingEvent.LoggerName;
-            LogLevel = loggingEvent.Level.Name;
+            LogLevel = GetLogLevel(loggingEvent.Level);
             TimeStamp = loggingEvent.TimeStamp;
             ThreadName = loggingEvent.ThreadName;
         }
@@ -28,5 +29,29 @@ namespace log4tank
         public DateTime TimeStamp { get; set; }
 
         public string ThreadName { get; set; }
+
+        private static object GetMessageObject(object messageObject)
+        {
+            if (messageObject != null && messageObject is SystemStringFormat)
+            {
+                return messageObject.ToString();
+            }
+            else
+            {
+                return messageObject;
+            }
+        }
+
+        private static string GetLogLevel(Level logLevel)
+        {
+            if (logLevel == null)
+            {
+                return null;
+            }
+            else
+            {
+                return logLevel.Name;
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace log4tank
     {
         private object _lock = new object();
 
-        private List<LogTankEvent> _logs = new List<LogTankEvent>();
+        private Queue<LogTankEvent> _logs = new Queue<LogTankEvent>();
         private BackgroundWorker _worker = new BackgroundWorker();
         private JsonSerializerSettings _defaultSerializerSettings = new JsonSerializerSettings();
 
@@ -80,7 +80,7 @@ namespace log4tank
         {
             lock (_lock)
             {
-                _logs.Add(new LogTankEvent(loggingEvent));
+                _logs.Enqueue(new LogTankEvent(loggingEvent));
                 StartWorkerIfNotRunning();
             }
         }
@@ -91,7 +91,7 @@ namespace log4tank
             {
                 foreach (var item in loggingEvents)
                 {
-                    _logs.Add(new LogTankEvent(item));
+                    _logs.Enqueue(new LogTankEvent(item));
                 }
                 StartWorkerIfNotRunning();
             }
@@ -105,8 +105,23 @@ namespace log4tank
 
                 lock (_lock)
                 {
-                    json = JsonConvert.SerializeObject(_logs, _defaultSerializerSettings);
-                    _logs.Clear();
+                    Console.WriteLine("_logs.count: " + _logs.Count);
+                    if (_logs.Count < 2000)
+                    {
+                        json = JsonConvert.SerializeObject(_logs, _defaultSerializerSettings);
+                        _logs.Clear();
+                    }
+                    else
+                    {
+                        LogTankEvent[] buffer = new LogTankEvent[1000];
+
+                        for (int i = 0; i < buffer.Length; i++)
+                        {
+                            buffer[i] = _logs.Dequeue();
+                        }
+
+                        json = JsonConvert.SerializeObject(_logs, _defaultSerializerSettings);
+                    }
                 }
 
                 SendJsonToLogTank(json);

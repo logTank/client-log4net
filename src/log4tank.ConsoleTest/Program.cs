@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using log4net;
 
 namespace log4tank.ConsoleTest
@@ -10,6 +11,12 @@ namespace log4tank.ConsoleTest
         public static void Main(string[] args)
         {
             log4net.Config.XmlConfigurator.Configure();
+            //SimpleTest();
+            PerformanceTests();
+        }
+
+        private static void SimpleTest()
+        {
             var logger = LogManager.GetLogger("TestLogger");
 
             logger.Debug(new MessageType() { DateProp = DateTime.Now, IntProp = 1, StringProp = "Debug Message" });
@@ -25,18 +32,33 @@ namespace log4tank.ConsoleTest
             Console.ReadLine();
         }
 
-        public class MessageType
+        private static void PerformanceTests()
         {
-            public string StringProp { get; set; }
+            int numberOfIterations = 1000 * 10;
+            int randomSeed = 1;
 
-            public int IntProp { get; set; }
+            Console.WriteLine("Running tests with {0} iterations...", numberOfIterations);
 
-            public DateTime DateProp { get; set; }
+            //ExecuteTest("PerformanceTestFileDebug", numberOfIterations, randomSeed);
+            //ExecuteTest("PerformanceTestFileInfo", numberOfIterations, randomSeed);
+            //ExecuteTest("PerformanceTestFileWarn", numberOfIterations, randomSeed);
+            ExecuteTest("PerformanceTestLogTankDebug", numberOfIterations, randomSeed);
+            ExecuteTest("PerformanceTestLogTankInfo", numberOfIterations, randomSeed);
+            ExecuteTest("PerformanceTestLogTankWarn", numberOfIterations, randomSeed);
+            ExecuteTest("PerformanceTestMixed1", numberOfIterations, randomSeed);
+            ExecuteTest("PerformanceTestMixed2", numberOfIterations, randomSeed);
+            Console.ReadLine();
+        }
 
-            public override string ToString()
-            {
-                return string.Format("{0} - {1} - {2}", StringProp, IntProp, DateProp);
-            }
+        private static void ExecuteTest(string testName, int numberOfIterations, int randomSeed)
+        {
+            TimeSpan duration;
+            PerformanceTester tester = new PerformanceTester(testName, numberOfIterations, randomSeed);
+
+            Console.WriteLine("Running {0} ...", testName);
+            duration = tester.RunTests();
+            Console.WriteLine("   it took {0} to complete the test, that is {1}ms/iterations", duration, duration.TotalMilliseconds / numberOfIterations);
+            Thread.Sleep(30 * 1000);
         }
     }
 }
