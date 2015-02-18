@@ -8,7 +8,7 @@
       </group>
     </dependencies>
     <id>log4tank</id>
-    <version>0.1.0.0</version>
+    <version>0.1.1.0</version>
     <title>LogTankAppender for log4net</title>
     <authors>Peter Grman, logTank</authors>
     <owners>Peter Grman, logTank</owners>
@@ -16,10 +16,11 @@
     <language />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <developmentDependency>false</developmentDependency>
-    <releaseNotes>first implementation, based on HTTP Post</releaseNotes>
+    <releaseNotes>Few bugs fixed compared to 0.1
+Limited post to maximum 2000 items per post</releaseNotes>
     <copyright>Copyright ©  2015</copyright>
   </metadata>
   <files>
-    <file src="E:\BtSync\GitHub\logtank\client-log4net\src\log4tank\bin\Release\log4tank.dll" target="lib\net20" />
+    <file src="E:\BtSync\GitHub\logtank\client-log4net\src\log4tank\bin\Debug\log4tank.dll" target="lib\net20" />
   </files>
 </package>
