@@ -109,22 +109,22 @@ namespace log4tank
                     _logs.Clear();
                 }
 
-                var http = GetHttpClient();
+                SendJsonToLogTank(json);
+            }
+        }
 
-                try
-                {
-                    DumpJsonIntoStream(json, http.GetRequestStream());
-                    //http.GetResponse().Close();
-                    var response = http.GetResponse();
-                    var sr = new StreamReader(response.GetResponseStream());
+        private void SendJsonToLogTank(string json)
+        {
+            var http = GetHttpClient();
 
-                    var strResponse = sr.ReadToEnd();
-                    Console.WriteLine(strResponse);
-                }
-                catch (Exception ex)
-                {
-                    ErrorHandler.Error("Cannot send logs to logTank.", ex);
-                }
+            try
+            {
+                DumpJsonIntoStream(json, http.GetRequestStream());
+                http.GetResponse().Close();
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.Error("Cannot send logs to logTank.", ex);
             }
         }
 
