@@ -2,13 +2,13 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata>
     <dependencies>
-      <group targetFramework="net20">
+      <group targetFramework="net40">
         <dependency id="log4net" version="2.0.3" />
         <dependency id="Newtonsoft.Json" version="6.0.8" />
       </group>
     </dependencies>
     <id>log4tank</id>
-    <version>0.1.1.0</version>
+    <version>0.2.0.0</version>
     <title>LogTankAppender for log4net</title>
     <authors>Peter Grman, logTank</authors>
     <owners>Peter Grman, logTank</owners>
@@ -16,11 +16,12 @@
     <language />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <developmentDependency>false</developmentDependency>
-    <releaseNotes>Few bugs fixed compared to 0.1
-Limited post to maximum 2000 items per post</releaseNotes>
+    <releaseNotes>
+      Compiled with .Net 4.0, includes a workaround to access HTTPS from mono
+    </releaseNotes>
     <copyright>Copyright ©  2015</copyright>
   </metadata>
   <files>
-    <file src="E:\BtSync\GitHub\logtank\client-log4net\src\log4tank\bin\Debug\log4tank.dll" target="lib\net20" />
+    <file src="C:\Users\Peter\BtSync\logtank\client-log4net\src\log4tank\bin\Release\log4tank.dll" target="lib\net40" />
   </files>
 </package>

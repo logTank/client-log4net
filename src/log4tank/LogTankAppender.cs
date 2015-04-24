@@ -23,6 +23,8 @@ namespace log4tank
 
         private string _customerKey = string.Empty;
         private string _apiKey = string.Empty;
+        private string _storeServerUrl = "https://store.logtank.com";
+        private string _tags;
 
         public string CustomerKey
         {
@@ -33,6 +35,10 @@ namespace log4tank
 
             set
             {
+                if (value != null)
+                {
+                    value = Environment.ExpandEnvironmentVariables(value);
+                }
                 _customerKey = value;
                 _uri = null;
             }
@@ -47,7 +53,48 @@ namespace log4tank
 
             set
             {
+                if (value != null)
+                {
+                    value = Environment.ExpandEnvironmentVariables(value);
+                }
                 _apiKey = value;
+                _uri = null;
+            }
+        }
+
+        public string StoreServerUrl
+        {
+            get
+            {
+                return _storeServerUrl;
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    value = Environment.ExpandEnvironmentVariables(value);
+                }
+                _storeServerUrl = value;
+                _uri = null;
+            }
+        }
+
+        public string Tags
+        {
+            get
+            {
+                return _tags;
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    value = Environment.ExpandEnvironmentVariables(value);
+                    value = value.Replace(',', '/');
+                }
+                _tags = value;
                 _uri = null;
             }
         }
@@ -60,7 +107,7 @@ namespace log4tank
 
                 if (tmpUri == null)
                 {
-                    tmpUri = new Uri(string.Format("http://store.logtank.com/{0}/{1}", CustomerKey, ApiKey));
+                    tmpUri = new Uri(new Uri(StoreServerUrl), CustomerKey + "/" + ApiKey + "/" + Tags);
                     _uri = tmpUri;
                 }
 
@@ -70,6 +117,10 @@ namespace log4tank
 
         public LogTankAppender()
         {
+            // mono bug-fix: http://forums.xamarin.com/discussion/10405/the-authentication-or-decryption-has-failed-in-the-web-request
+            System.Net.ServicePointManager.ServerCertificateValidationCallback += (o, certificate, chain, errors) => true;
+            System.Security.Cryptography.AesCryptoServiceProvider b = new System.Security.Cryptography.AesCryptoServiceProvider();
+
             _defaultSerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             _defaultSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 
@@ -105,7 +156,6 @@ namespace log4tank
 
                 lock (_lock)
                 {
-                    Console.WriteLine("_logs.count: " + _logs.Count);
                     if (_logs.Count < 2000)
                     {
                         json = JsonConvert.SerializeObject(_logs, _defaultSerializerSettings);
